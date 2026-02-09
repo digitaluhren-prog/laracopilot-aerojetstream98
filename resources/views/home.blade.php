@@ -84,21 +84,63 @@
     </div>
 </div>
 
-<div class="bg-gray-50 py-12 sm:py-16 lg:py-20">
+<div class="bg-gradient-to-b from-gray-50 to-white py-16 sm:py-20 lg:py-28">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 sm:mb-16">
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">📁 Kategoritë Kryesore</h2>
-            <p class="text-base sm:text-lg lg:text-xl text-gray-600">Eksploro shërbimet sipas kategorive të ndryshme</p>
+        <div class="text-center mb-12 sm:mb-16 lg:mb-20">
+            <div class="inline-block bg-red-100 text-red-600 px-4 py-2 rounded-full font-bold text-sm mb-4">
+                <span class="mr-2">✨</span>EKSPLORO KATEGORITË
+            </div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6">
+                Kategoritë <span class="text-red-600">Kryesore</span>
+            </h2>
+            <p class="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
+                Gjej shërbimet që të nevojiten më shpejt duke eksploruar kategoritë më të populluara
+            </p>
         </div>
         
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
             @foreach($categories as $category)
-            <a href="{{ route('search', ['category' => $category->id]) }}" class="group bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 p-4 sm:p-6 text-center transform hover:-translate-y-2">
-                <div class="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">{{ $category->icon }}</div>
-                <h3 class="font-bold text-gray-900 text-sm sm:text-base lg:text-lg mb-1 sm:mb-2 group-hover:text-red-600 transition">{{ $category->name }}</h3>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">{{ $category->listings_count }} shpallje</p>
+            <a href="{{ route('search', ['category' => $category->id]) }}" class="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 p-6 sm:p-8 text-center overflow-hidden transform hover:-translate-y-3 hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-3xl"></div>
+                
+                <div class="relative z-10">
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-md group-hover:shadow-xl">
+                        <span class="text-3xl sm:text-4xl lg:text-5xl transform group-hover:scale-110 transition-transform duration-500">{{ $category->icon }}</span>
+                    </div>
+                    
+                    <h3 class="font-bold text-gray-900 text-sm sm:text-base lg:text-lg mb-2 sm:mb-3 group-hover:text-red-600 transition-colors duration-300">
+                        {{ $category->name }}
+                    </h3>
+                    
+                    <div class="inline-flex items-center justify-center bg-gray-100 group-hover:bg-red-100 px-3 py-1 rounded-full transition-colors duration-300">
+                        <span class="text-xs sm:text-sm font-bold text-gray-700 group-hover:text-red-600 transition-colors duration-300">
+                            {{ $category->listings_count }}
+                        </span>
+                        <span class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 ml-1 transition-colors duration-300">shpallje</span>
+                    </div>
+                    
+                    <div class="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        <div class="flex items-center justify-center text-red-600 font-bold text-sm">
+                            <span class="mr-1">Shiko</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-red-400 to-red-500 rounded-full opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500 -mr-10 -mt-10"></div>
             </a>
             @endforeach
+        </div>
+        
+        <div class="text-center mt-12 sm:mt-16">
+            <a href="{{ route('search') }}" class="inline-flex items-center bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                <span class="text-lg">Shiko të Gjitha Kategoritë</span>
+                <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+            </a>
         </div>
     </div>
 </div>

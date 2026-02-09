@@ -10,12 +10,8 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        if (!session('admin_logged_in')) {
-            return redirect()->route('admin.login');
-        }
-        
         $categories = Category::withCount('listings')
-            ->orderBy('name')
+            ->orderBy('created_at', 'desc')
             ->paginate(15);
         
         return view('admin.categories.index', compact('categories'));
@@ -23,26 +19,19 @@ class CategoryController extends Controller
     
     public function create()
     {
-        if (!session('admin_logged_in')) {
-            return redirect()->route('admin.login');
-        }
-        
         return view('admin.categories.create');
     }
     
     public function store(Request $request)
     {
-        if (!session('admin_logged_in')) {
-            return redirect()->route('admin.login');
-        }
-        
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-            'description' => 'nullable|string'
-        ], [
-            'name.required' => 'Emri i kategorisë është i detyrueshëm',
-            'name.unique' => 'Kjo kategori ekziston tashmë'
+            'name' => 'required|string|max:255',
+            'icon' => 'required|string|max:10',
+            'description' => 'nullable|string|max:1000',
+            'active' => 'nullable|boolean'
         ]);
+        
+        $validated['active'] = $request->has('active') ? true : false;
         
         Category::create($validated);
         
@@ -52,29 +41,22 @@ class CategoryController extends Controller
     
     public function edit($id)
     {
-        if (!session('admin_logged_in')) {
-            return redirect()->route('admin.login');
-        }
-        
         $category = Category::findOrFail($id);
         return view('admin.categories.edit', compact('category'));
     }
     
     public function update(Request $request, $id)
     {
-        if (!session('admin_logged_in')) {
-            return redirect()->route('admin.login');
-        }
-        
         $category = Category::findOrFail($id);
         
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $id,
-            'description' => 'nullable|string'
-        ], [
-            'name.required' => 'Emri i kategorisë është i detyrueshëm',
-            'name.unique' => 'Kjo kategori ekziston tashmë'
+            'name' => 'required|string|max:255',
+            'icon' => 'required|string|max:10',
+            'description' => 'nullable|string|max:1000',
+            'active' => 'nullable|boolean'
         ]);
+        
+        $validated['active'] = $request->has('active') ? true : false;
         
         $category->update($validated);
         
@@ -84,14 +66,11 @@ class CategoryController extends Controller
     
     public function destroy($id)
     {
-        if (!session('admin_logged_in')) {
-            return redirect()->route('admin.login');
-        }
-        
         $category = Category::findOrFail($id);
         
         if ($category->listings()->count() > 0) {
-            return back()->withErrors(['error' => 'Nuk mund të fshihet kategoria që përmban shpalje!']);
+            return redirect()->route('admin.categories.index')
+                ->with('error', 'Nuk mund të fshini këtë kategori sepse ka shpallje të lidhura!');
         }
         
         $category->delete();
