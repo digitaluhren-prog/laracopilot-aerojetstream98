@@ -148,19 +148,23 @@
                         @csrf
                         
                         <div class="mb-4">
-                            <label class="block text-gray-700 font-bold mb-2">Vlerësimi Juaj *</label>
-                            <div class="flex items-center space-x-2">
-                                @for($i = 1; $i <= 5; $i++)
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="rating" value="{{ $i }}" required class="hidden peer" {{ old('rating') == $i ? 'checked' : '' }}>
-                                    <span class="text-3xl peer-checked:text-yellow-500 text-gray-300 hover:text-yellow-400 transition">⭐</span>
-                                </label>
-                                @endfor
-                            </div>
-                            @error('rating')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+    <label class="block text-gray-700 font-bold mb-2">Vlerësimi Juaj *</label>
+
+    <div id="rating-stars" class="flex gap-1 text-3xl cursor-pointer select-none">
+        @for($i = 1; $i <= 5; $i++)
+            <span data-value="{{ $i }}" class="star text-gray-300 hover:text-yellow-400 transition">★</span>
+        @endfor
+    </div>
+
+    <input type="hidden" name="rating" id="rating-value" required>
+
+    @error('rating')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
+
+
+                      
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
@@ -260,4 +264,29 @@
         </div>
     </div>
 </div>
+
+
+<script>
+const stars = document.querySelectorAll('#rating-stars .star');
+const ratingInput = document.getElementById('rating-value');
+let selectedRating = 0;
+
+function paintStars(rating) {
+    stars.forEach(star => {
+        star.classList.toggle('text-yellow-400', star.dataset.value <= rating);
+        star.classList.toggle('text-gray-300', star.dataset.value > rating);
+    });
+}
+
+stars.forEach(star => {
+    star.addEventListener('mouseenter', () => paintStars(star.dataset.value));
+    star.addEventListener('mouseleave', () => paintStars(selectedRating));
+    star.addEventListener('click', () => {
+        selectedRating = star.dataset.value;
+        ratingInput.value = selectedRating;
+        paintStars(selectedRating);
+    });
+});
+</script>
+
 @endsection

@@ -11,18 +11,25 @@ use Illuminate\Support\Facades\Storage;
 class UserListingController extends Controller
 {
     public function index()
-    {
-        if (!session('user_logged_in')) {
-            return redirect()->route('user.login');
-        }
-        
-        $listings = UserListing::with('category')
-            ->where('user_id', session('user_id'))
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
-        
-        return view('user.listings.index', compact('listings'));
-    }
+{
+    $userId = session('user_id');
+
+    $listings = UserListing::where('user_id', $userId)
+        ->latest()
+        ->paginate(10);
+
+    $approvedCount = UserListing::where('user_id', $userId)->where('status', 'approved')->count();
+    $pendingCount = UserListing::where('user_id', $userId)->where('status', 'pending')->count();
+    $rejectedCount = UserListing::where('user_id', $userId)->where('status', 'rejected')->count();
+
+    return view('user.listings.index', compact(
+        'listings',
+        'approvedCount',
+        'pendingCount',
+        'rejectedCount'
+    ));
+}
+
     
     public function create()
     {
